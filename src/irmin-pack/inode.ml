@@ -136,8 +136,8 @@ struct
 
       let v_t : v Irmin.Type.t =
         let open Irmin.Type in
-        variant "Bin.v" (fun values inodes ->
-          function Values l -> values l | Inodes i -> inodes i)
+        variant "Bin.v" (fun values inodes -> function
+          | Values l -> values l | Inodes i -> inodes i)
         |~ case1 "Values" (list (pair step_t value_t)) (fun t -> Values t)
         |~ case1 "Inodes" inodes (fun t -> Inodes t)
         |> sealv
@@ -180,8 +180,8 @@ struct
 
       let address : address Irmin.Type.t =
         let open Irmin.Type in
-        variant "Compress.address" (fun i d ->
-          function Indirect x -> i x | Direct x -> d x)
+        variant "Compress.address" (fun i d -> function
+          | Indirect x -> i x | Direct x -> d x)
         |~ case1 "Indirect" int64 (fun x -> Indirect x)
         |~ case1 "Direct" H.t (fun x -> Direct x)
         |> sealv
@@ -216,19 +216,18 @@ struct
         let open Irmin.Type in
         variant "Compress.value"
           (fun contents_ii
-               contents_x_ii
-               node_ii
-               contents_id
-               contents_x_id
-               node_id
-               contents_di
-               contents_x_di
-               node_di
-               contents_dd
-               contents_x_dd
-               node_dd
-               ->
-          function
+          contents_x_ii
+          node_ii
+          contents_id
+          contents_x_id
+          node_id
+          contents_di
+          contents_x_di
+          node_di
+          contents_dd
+          contents_x_dd
+          node_dd
+          -> function
           | Contents (Indirect n, Indirect h, m) ->
               if is_default m then contents_ii (n, h)
               else contents_x_ii (n, h, m)
@@ -275,8 +274,8 @@ struct
 
       let v_t : v Irmin.Type.t =
         let open Irmin.Type in
-        variant "Compress.v" (fun values inodes ->
-          function Values x -> values x | Inodes x -> inodes x)
+        variant "Compress.v" (fun values inodes -> function
+          | Values x -> values x | Inodes x -> inodes x)
         |~ case1 "Values" (list value) (fun x -> Values x)
         |~ case1 "Inodes" inodes (fun x -> Inodes x)
         |> sealv
@@ -333,8 +332,8 @@ struct
 
       let entry_t inode : entry Irmin.Type.t =
         let open Irmin.Type in
-        variant "Node.entry" (fun empty inode ->
-          function Empty -> empty | Inode i -> inode i)
+        variant "Node.entry" (fun empty inode -> function
+          | Empty -> empty | Inode i -> inode i)
         |~ case0 "Empty" Empty
         |~ case1 "Inode" inode (fun i -> Inode i)
         |> sealv
@@ -444,8 +443,8 @@ struct
         let open Irmin.Type in
         let pre_hash x = pre_hash Bin.v_t (to_bin_v x) in
         let entry = entry_t (inode_t t) in
-        variant "Inode.t" (fun values inodes ->
-          function Values v -> values v | Inodes i -> inodes i)
+        variant "Inode.t" (fun values inodes -> function
+          | Values v -> values v | Inodes i -> inodes i)
         |~ case1 "Values" (StepMap.t value_t) (fun t -> Values t)
         |~ case1 "Inodes" (inodes entry) (fun t -> Inodes t)
         |> sealv
